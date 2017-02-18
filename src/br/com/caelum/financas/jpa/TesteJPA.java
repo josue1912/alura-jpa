@@ -21,8 +21,14 @@ public class TesteJPA {
 		EntityManager em = new JPAUtil().getEntityManager();
 		
 		em.getTransaction().begin();
-		em.persist(conta);
+		Conta conta2 = em.find(Conta.class, 3);
 		em.getTransaction().commit();
+		
+		conta2.setTitular("Lionel Messi");
+		em.getTransaction().begin();
+		em.merge(conta2);
+		em.getTransaction().commit();
+		
 		em.close();
 	}
 }
