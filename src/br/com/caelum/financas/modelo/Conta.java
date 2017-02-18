@@ -13,12 +13,12 @@ import javax.persistence.SequenceGenerator;
 public class Conta {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_CONTAS")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SEQ_CONTAS")
 	private Integer id;
 	private String titular;
-	private String banco;
-	private String agencia;
 	private String numero;
+	private String banco;
+	private String agencia;	
 	private BigDecimal saldo;
 
 	public BigDecimal getSaldo() {
