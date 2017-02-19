@@ -1,12 +1,12 @@
 package br.com.caelum.financas.jpa;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
+import br.com.caelum.financas.dao.MovimentacaoDao;
 import br.com.caelum.financas.modelo.Conta;
 import br.com.caelum.financas.modelo.Movimentacao;
+import br.com.caelum.financas.modelo.TipoMovimentacao;
 import br.com.caelum.financas.util.JPAUtil;
 
 public class TesteMovimentacaoConta {
@@ -21,12 +21,19 @@ public class TesteMovimentacaoConta {
 		Conta conta = em.find(Conta.class,1);
 		System.out.println(conta.getMovimentacoes().size());
 		
-		Query query = em.createQuery("select distinct c from Conta c join fetch c.movimentacoes");
-		List<Conta> contas = query.getResultList();
-	
-		for(Conta c:contas){
-			System.out.println("\nTitular: "+c.getTitular() + "\nNum. de movimentações: "+c.getMovimentacoes().size());
-		}
+		//Usando DAO
+		MovimentacaoDao dao = new MovimentacaoDao(em);
+		Double mediaDaContaPeloTipo = dao.mediaDaContaPeloTipo(conta, TipoMovimentacao.ENTRADA);
+		System.out.println("Com DAO: "+mediaDaContaPeloTipo);
+		
+		
+		//Usando NamedQuery
+		TypedQuery<Double> query = em.createNamedQuery("mediaDaContaPeloTipo", Double.class);
+		query.setParameter("pConta", conta);
+		query.setParameter("pTipo", TipoMovimentacao.ENTRADA);
+		Double media = query.getSingleResult();
+		System.out.println("Com NamedQuery: "+media);
+		
 		
 		em.close();
 	}	
